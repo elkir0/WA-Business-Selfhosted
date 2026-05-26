@@ -36,3 +36,4 @@ coverage/
 
 # Secrets scan reports (gitleaks output)
 gitleaks-report.json
+gitleaks-report-*.json
