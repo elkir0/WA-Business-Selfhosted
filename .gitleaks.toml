@@ -1,0 +1,40 @@
+# Custom gitleaks config for WA-Business-Selfhosted
+# Extends the default rules with project-specific patterns.
+
+title = "WA-Business-Selfhosted gitleaks config"
+
+[extend]
+useDefault = true
+
+# Project-specific high-confidence patterns
+[[rules]]
+id = "meta-graph-access-token"
+description = "Meta Graph API access token (long-lived EAA prefix)"
+regex = '''EAA[A-Za-z0-9]{50,}'''
+tags = ["secret", "meta"]
+
+[[rules]]
+id = "whatsapp-phone-id"
+description = "Specific WhatsApp Phone Number ID known from chirosteo prod (avoid leaks during extraction)"
+regex = '''589510807587130|578793621992297|1066985315416630'''
+tags = ["pii", "chirosteo"]
+
+[[rules]]
+id = "chirosteo-domain"
+description = "Chirosteo internal domains / refs"
+regex = '''(chirosteo|shathony\.fr|ekipsecret|webosteo)'''
+tags = ["pii", "chirosteo"]
+
+[[rules]]
+id = "private-network-ip"
+description = "Internal 10.10.10.x IPs"
+regex = '''10\.10\.10\.\d+'''
+tags = ["infra"]
+
+[allowlist]
+description = "Allow trademark mentions of WhatsApp/Meta in documentation"
+paths = [
+    '''docs/trademark-notice\.md''',
+    '''README\.md''',
+    '''SECURITY\.md''',
+]
