@@ -1,0 +1,84 @@
+/*
+ * WA-Business-Selfhosted — design tokens
+ * Reference: docs/superpowers/specs/2026-05-26-wa-business-selfhosted-design.md §6
+ *
+ * Imported by the admin UI (Phase 2) and any consumer of the brand palette.
+ * Variables are scoped to :root so they cascade naturally; dark-mode overrides
+ * apply when the [data-theme="dark"] attribute is set on <html> or any ancestor.
+ */
+
+:root {
+  /* Brand */
+  --color-primary: #0EA5E9;          /* sky-500 */
+  --color-primary-dark: #0369A1;     /* sky-700 */
+  --color-primary-light: #E0F2FE;    /* sky-100 */
+
+  /* Status */
+  --color-success: #10B981;          /* emerald-500 */
+  --color-warning: #F59E0B;          /* amber-500 */
+  --color-danger: #EF4444;           /* red-500 */
+  --color-info: #6366F1;             /* indigo-500 */
+
+  /* Surfaces — light theme defaults */
+  --color-bg: #F8FAFC;               /* slate-50 */
+  --color-bg-elevated: #FFFFFF;
+  --color-border: #E2E8F0;           /* slate-200 */
+  --color-border-strong: #CBD5E1;    /* slate-300 */
+
+  /* Text */
+  --color-text: #0F172A;             /* slate-900 */
+  --color-text-muted: #475569;       /* slate-600 */
+  --color-text-subtle: #94A3B8;      /* slate-400 */
+  --color-text-inverse: #F8FAFC;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Spacing scale (rem-based) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0F172A;               /* slate-900 */
+  --color-bg-elevated: #1E293B;      /* slate-800 */
+  --color-border: #1E293B;           /* slate-800 */
+  --color-border-strong: #334155;    /* slate-700 */
+  --color-text: #F1F5F9;             /* slate-100 */
+  --color-text-muted: #94A3B8;       /* slate-400 */
+  --color-text-subtle: #64748B;      /* slate-500 */
+  --color-text-inverse: #0F172A;
+  --color-primary-light: #075985;    /* sky-800, darker tint for dark surfaces */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* auto-apply dark theme if user prefers it and no explicit override */
+    --color-bg: #0F172A;
+    --color-bg-elevated: #1E293B;
+    --color-border: #1E293B;
+    --color-border-strong: #334155;
+    --color-text: #F1F5F9;
+    --color-text-muted: #94A3B8;
+    --color-text-subtle: #64748B;
+    --color-text-inverse: #0F172A;
+    --color-primary-light: #075985;
+  }
+}
