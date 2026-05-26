@@ -1,0 +1,25 @@
+{
+  "name": "wa-business-selfhosted",
+  "version": "0.0.0",
+  "description": "Open-source self-hostable gateway for the WhatsApp Business Cloud API.",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elkir0/WA-Business-Selfhosted.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elkir0/WA-Business-Selfhosted/issues"
+  },
+  "homepage": "https://github.com/elkir0/WA-Business-Selfhosted#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "whatsapp",
+    "whatsapp-business",
+    "messaging",
+    "selfhosted",
+    "meta",
+    "cloud-api"
+  ]
+}
