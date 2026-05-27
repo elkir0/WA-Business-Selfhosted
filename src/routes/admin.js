@@ -95,6 +95,9 @@ router.get('/csrf-token', requireAdminSession, issueCsrfToken, (req, res) => {
   res.json({ token: req.csrfToken });
 });
 
+// ── /admin/api/* — internal endpoints for the bundled SPA ────────────────────
+router.use('/api', require('./api-admin'));
+
 // ── SPA catch-all (auth-required) ────────────────────────────────────────────
 // Serves the Preact bundle compiled by Vite into `dist/admin/`.
 
