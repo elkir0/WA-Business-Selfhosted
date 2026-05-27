@@ -1,4 +1,5 @@
 import { LocationProvider, Router, Route } from 'preact-iso';
+import { ErrorBoundary } from './components/ErrorBoundary.jsx';
 import { Layout } from './components/Layout.jsx';
 import { Dashboard } from './pages/Dashboard.jsx';
 import { Conversations } from './pages/Conversations.jsx';
@@ -10,6 +11,7 @@ import { Audit } from './pages/Audit.jsx';
 
 export function App() {
   return (
+    <ErrorBoundary>
     <LocationProvider>
       <Layout>
         <Router>
@@ -25,6 +27,7 @@ export function App() {
         </Router>
       </Layout>
     </LocationProvider>
+    </ErrorBoundary>
   );
 }
 
