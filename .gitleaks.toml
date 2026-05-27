@@ -32,9 +32,12 @@ regex = '''10\.10\.10\.\d+'''
 tags = ["infra"]
 
 [allowlist]
-description = "Allow trademark mentions of WhatsApp/Meta in documentation"
+description = "Allow self-referencing mentions in docs, gitleaks config, and tests that VERIFY these patterns are absent from production code"
 paths = [
     '''docs/trademark-notice\.md''',
     '''README\.md''',
     '''SECURITY\.md''',
+    '''CHANGELOG\.md''',
+    '''\.gitleaks\.toml''',
+    '''tests/.*\.test\.js''',
 ]
