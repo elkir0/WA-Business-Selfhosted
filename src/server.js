@@ -363,6 +363,10 @@ function broadcastSSE(event, data) {
 // ── Apply auth to all /api/* routes ──
 app.use('/api', requireAuth);
 
+// ── Admin UI (bundled) ──
+const adminRouter = require('./routes/admin');
+app.use('/admin', adminRouter);
+
 // ══════════════════════════════════════════════════════════════
 // HEALTH & CONFIG
 // ══════════════════════════════════════════════════════════════
