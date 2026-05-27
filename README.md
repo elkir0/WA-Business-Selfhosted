@@ -35,20 +35,52 @@ A production-grade Node.js + PostgreSQL gateway that talks to the **official Met
 
 ## Status
 
-This repository is **pre-alpha**. The Node application code is being extracted from a working production deployment and will land in `v0.1.0`. The admin UI lands in `v0.2.0`. See [CHANGELOG.md](CHANGELOG.md) and [docs/](docs/) for the current state.
+This repository is **pre-alpha**. The application code is shipped and tested; an admin UI lands in `v0.2.0`. No tagged release yet — pin to a commit SHA if you deploy from here today.
 
-If you want to be notified at first release: GitHub > **Watch** > **Custom** > **Releases**.
+If you want to be notified at the first tagged release: GitHub > **Watch** > **Custom** > **Releases**.
 
 ## Quickstart
 
-> The quickstart will be filled in when `v0.1.0` ships. For now, this repo only contains branding, governance, and structure.
+> Requires Node ≥ 20, PostgreSQL ≥ 14, and a public HTTPS endpoint Meta can reach.
+
+```bash
+git clone https://github.com/elkir0/WA-Business-Selfhosted.git
+cd WA-Business-Selfhosted
+npm install --production
+cp .env.example .env
+# Edit .env — at minimum set DB_PASSWORD, API_TOKEN, META_APP_SECRET,
+# WHATSAPP_VERIFY_TOKEN, CORS_ORIGIN, and the WHATSAPP_* credentials.
+
+# Load schema (create the database first per docs/deployment.md)
+psql -U whatsapp -d whatsapp_messages -h 127.0.0.1 -f db/schema.sql
+
+# Run
+npm start
+# [WhatsApp API] listening on :3100
+```
+
+Then point a reverse proxy (`examples/nginx/wa-selfhosted.conf`) at it for HTTPS, configure the Meta webhook (see [docs/meta-setup.md](docs/meta-setup.md)), and you have a working WhatsApp Business gateway.
+
+For a containerized setup: `cp examples/docker-compose.yml . && docker compose up -d`.
+
+Send a test message:
+
+```bash
+curl -X POST https://your-domain.example.com/api/messages/send/text \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"to":"+15555550100","body":"hello from WA-Business-Selfhosted"}'
+```
 
 ## Documentation
 
+- [docs/deployment.md](docs/deployment.md) — zero-to-running deployment guide
+- [docs/meta-setup.md](docs/meta-setup.md) — Meta App, WABA, token, and webhook setup
+- [docs/plugins.md](docs/plugins.md) — webhook-forward and sms-fallback plugins, writing custom drivers
+- [docs/webhook-format.md](docs/webhook-format.md) — Meta payload reference
 - [docs/trademark-notice.md](docs/trademark-notice.md) — trademark stance and naming rationale
 - [SECURITY.md](SECURITY.md) — security policy, reporting, hardening checklist
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute
-- More documentation lands with `v0.1.0` (deployment, meta-setup, plugins, admin-ui).
 
 ## License
 
