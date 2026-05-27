@@ -1,0 +1,47 @@
+# Example systemd unit for WA-Business-Selfhosted.
+#
+# 1. Edit `User`, `WorkingDirectory`, and `EnvironmentFile` paths.
+# 2. Copy to /etc/systemd/system/wa-selfhosted.service
+# 3. sudo systemctl daemon-reload && sudo systemctl enable --now wa-selfhosted
+# 4. sudo journalctl -u wa-selfhosted -f
+
+[Unit]
+Description=WA-Business-Selfhosted (WhatsApp Business Cloud API gateway)
+Documentation=https://github.com/elkir0/WA-Business-Selfhosted
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wa
+Group=wa
+WorkingDirectory=/opt/wa-business-selfhosted
+EnvironmentFile=/opt/wa-business-selfhosted/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=on-failure
+RestartSec=5s
+
+# Resource limits — adjust to your workload.
+LimitNOFILE=65536
+
+# Hardening (systemd's "make services nicer to the OS" options).
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+# Give the process write access to its media directory only.
+ReadWritePaths=/var/lib/whatsapp-media
+
+# Logging goes to journald.
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

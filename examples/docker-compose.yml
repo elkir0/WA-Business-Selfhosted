@@ -1,0 +1,54 @@
+# Docker Compose example for WA-Business-Selfhosted.
+#
+# Usage:
+#   cp .env.example .env       # in the repo root, fill it in
+#   cp examples/docker-compose.yml .
+#   docker compose up -d
+#   docker compose logs -f gateway
+#
+# This compose file expects:
+#   - a `.env` file alongside it (in the directory you run `docker compose` from)
+#   - the gateway source code in the current directory (./)
+#
+# It does NOT terminate TLS — put Caddy / Nginx / Traefik in front for HTTPS.
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-whatsapp}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in .env}
+      POSTGRES_DB: ${DB_NAME:-whatsapp_messages}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-whatsapp} -d ${DB_NAME:-whatsapp_messages}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gateway:
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: sh -c "npm install --production --no-audit --no-fund && exec node src/server.js"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      MEDIA_ROOT: /data/media
+    ports:
+      - "127.0.0.1:3100:3100"      # only expose to localhost; reverse-proxy from there
+    volumes:
+      - ./:/app
+      - media:/data/media
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  media:

@@ -17,7 +17,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "node --test tests/",
+    "test": "node --test 'tests/*.test.js'",
     "scan": "./scripts/scan-secrets.sh"
   },
   "dependencies": {
