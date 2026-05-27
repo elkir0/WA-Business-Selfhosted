@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Brand tokens — keep in sync with assets/styles/tokens.css */
+@theme {
+  --color-primary: #0EA5E9;
+  --color-primary-dark: #0369A1;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
