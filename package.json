@@ -1,6 +1,6 @@
 {
   "name": "wa-business-selfhosted",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "Open-source self-hostable gateway for the WhatsApp Business Cloud API.",
   "license": "AGPL-3.0-or-later",
   "repository": {
@@ -41,7 +41,7 @@
     "@tailwindcss/vite": "^4.0.0",
     "concurrently": "^9.0.0",
     "tailwindcss": "^4.0.0",
-    "vite": "^5.4.0"
+    "vite": "^6.0.0"
   },
   "keywords": [
     "whatsapp",
