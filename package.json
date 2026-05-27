@@ -32,7 +32,9 @@
     "form-data": "^4.0.0",
     "helmet": "^8.0.0",
     "pg": "^8.13.0",
-    "preact": "^10.24.0"
+    "preact": "^10.24.0",
+    "preact-iso": "^2.8.0",
+    "chart.js": "^4.4.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.0",
