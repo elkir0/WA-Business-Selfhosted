@@ -13,12 +13,15 @@ const express = require('express');
 const os = require('node:os');
 const fs = require('node:fs');
 const { requireAdminSession } = require('../lib/admin-auth');
-const { listRecentAudit } = require('../lib/admin-audit');
+const { listRecentAudit, audit } = require('../lib/admin-audit');
+const { verifyCsrf } = require('../lib/csrf');
 const webhookForward = require('../plugins/webhook-forward');
 const db = require('../lib/db');
 
 const router = express.Router();
 router.use(requireAdminSession);
+// CSRF is checked on state-changing verbs; safe verbs are passed through.
+router.use(verifyCsrf);
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
 
@@ -212,5 +215,94 @@ router.get('/audit', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch audit log.' });
   }
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// ACTIONS — state-changing operations (CSRF + audit + session-auth)
+// ════════════════════════════════════════════════════════════════════════════
+
+// ── Failed forwards: retry one / retry all / clear ──────────────────────────
+
+router.post('/forwards/:id/retry',
+  audit('forward_retry', 'forward', r => r.params.id),
+  async (req, res) => {
+    const result = await webhookForward.retryFailed(req.params.id);
+    if (!result.ok) return res.status(400).json(result);
+    res.json(result);
+  }
+);
+
+router.post('/forwards/retry-all',
+  audit('forward_retry_all', 'forward'),
+  async (req, res) => {
+    const result = await webhookForward.retryAll();
+    if (!result.ok) return res.status(400).json(result);
+    res.json(result);
+  }
+);
+
+router.delete('/forwards',
+  audit('forward_clear_all', 'forward'),
+  (req, res) => {
+    const before = webhookForward.getFailed().length;
+    webhookForward.clearFailed();
+    res.json({ ok: true, cleared: before });
+  }
+);
+
+// ── Conversation actions ────────────────────────────────────────────────────
+
+router.post('/conversations/:id/pause-bot',
+  audit('bot_pause', 'conversation', r => r.params.id),
+  async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id.' });
+    const conv = await db.updateConversation(id, { ai_enabled: false });
+    if (!conv) return res.status(404).json({ error: 'Conversation not found.' });
+    res.json(conv);
+  }
+);
+
+router.post('/conversations/:id/resume-bot',
+  audit('bot_resume', 'conversation', r => r.params.id),
+  async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id.' });
+    const conv = await db.updateConversation(id, { ai_enabled: true });
+    if (!conv) return res.status(404).json({ error: 'Conversation not found.' });
+    res.json(conv);
+  }
+);
+
+router.post('/conversations/:id/close',
+  audit('conversation_close', 'conversation', r => r.params.id),
+  async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id.' });
+    const conv = await db.updateConversation(id, { status: 'closed' });
+    if (!conv) return res.status(404).json({ error: 'Conversation not found.' });
+    res.json(conv);
+  }
+);
+
+router.post('/conversations/:id/reopen',
+  audit('conversation_reopen', 'conversation', r => r.params.id),
+  async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id.' });
+    const conv = await db.updateConversation(id, { status: 'active' });
+    if (!conv) return res.status(404).json({ error: 'Conversation not found.' });
+    res.json(conv);
+  }
+);
+
+router.post('/conversations/:id/mark-read',
+  audit('conversation_mark_read', 'conversation', r => r.params.id),
+  async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id.' });
+    await db.markConversationRead(id);
+    res.json({ ok: true });
+  }
+);
 
 module.exports = router;
