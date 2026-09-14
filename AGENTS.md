@@ -5,7 +5,7 @@
 > | | |
 > |---|---|
 > | Code | `~/dev/<projet>` sur le Mac · `~/code/<projet>` sur le devbox et omarchy |
-> | Origine git | Forgejo `http://192.168.1.76:3000/anthony/<dépôt>` — joignable de partout via Tailscale |
+> | Origine git | Forgejo `http://forgejo:3000/anthony/<dépôt>` — nom Tailscale, joignable de partout |
 > | Secrets | coffre chiffré SOPS + age (`~/infra-secrets`), jamais dans le dépôt |
 > | Rituel | `dev -p` en arrivant · `dev --sync` en partant |
 >
@@ -24,7 +24,7 @@
 
 | | |
 |---|---|
-| Dépôt | `http://192.168.1.76:3000/anthony/WA-Business-Selfhosted` |
+| Dépôt | `http://forgejo:3000/anthony/WA-Business-Selfhosted` |
 | Pile détectée | Node |
 | Commits | 44 |
 
